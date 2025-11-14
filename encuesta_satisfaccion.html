@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Satisfacción - Agencia de Viajes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-section {
+            margin-bottom: 30px;
+        }
+
+        .question-section h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .rating-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .rating-option input[type="radio"] {
+            display: none;
+        }
+
+        .rating-label {
+            display: block;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .rating-label .emoji {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .rating-label .text {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .rating-option input[type="radio"]:checked + .rating-label {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: scale(1.05);
+        }
+
+        .rating-option input[type="radio"]:checked + .rating-label.malo {
+            border-color: #e74c3c;
+            background: #ffe5e5;
+        }
+
+        .rating-option input[type="radio"]:checked + .rating-label.regular {
+            border-color: #f39c12;
+            background: #fff4e5;
+        }
+
+        .rating-option input[type="radio"]:checked + .rating-label.bueno {
+            border-color: #27ae60;
+            background: #e5ffe5;
+        }
+
+        .comment-section {
+            margin-top: 25px;
+        }
+
+        .comment-section label {
+            display: block;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .comment-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s ease;
+        }
+
+        .comment-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .success-message .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            color: #27ae60;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 480px) {
+            .rating-options {
+                flex-direction: column;
+            }
+
+            .rating-option {
+                min-width: 100%;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Encuesta de Satisfacción</h1>
+            <p>Tu opinión nos ayuda a mejorar</p>
+        </div>
+
+        <form id="surveyForm" class="content">
+            <div class="question-section">
+                <h3>1. ¿Cómo calificarías la atención recibida?</h3>
+                <div class="rating-options">
+                    <div class="rating-option">
+                        <input type="radio" id="atencion-malo" name="atencion" value="Malo" required>
+                        <label for="atencion-malo" class="rating-label malo">
+                            <span class="emoji">😞</span>
+                            <span class="text">Malo</span>
+                        </label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="atencion-regular" name="atencion" value="Regular" required>
+                        <label for="atencion-regular" class="rating-label regular">
+                            <span class="emoji">😐</span>
+                            <span class="text">Regular</span>
+                        </label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="atencion-bueno" name="atencion" value="Bueno" required>
+                        <label for="atencion-bueno" class="rating-label bueno">
+                            <span class="emoji">😊</span>
+                            <span class="text">Bueno</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="question-section">
+                <h3>2. ¿Qué tan satisfecho estás con el servicio brindado?</h3>
+                <div class="rating-options">
+                    <div class="rating-option">
+                        <input type="radio" id="servicio-malo" name="servicio" value="Malo" required>
+                        <label for="servicio-malo" class="rating-label malo">
+                            <span class="emoji">😞</span>
+                            <span class="text">Malo</span>
+                        </label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="servicio-regular" name="servicio" value="Regular" required>
+                        <label for="servicio-regular" class="rating-label regular">
+                            <span class="emoji">😐</span>
+                            <span class="text">Regular</span>
+                        </label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="servicio-bueno" name="servicio" value="Bueno" required>
+                        <label for="servicio-bueno" class="rating-label bueno">
+                            <span class="emoji">😊</span>
+                            <span class="text">Bueno</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="question-section">
+                <h3>3. ¿Recomendarías nuestros servicios?</h3>
+                <div class="rating-options">
+                    <div class="rating-option">
+                        <input type="radio" id="recomendar-malo" name="recomendar" value="No" required>
+                        <label for="recomendar-malo" class="rating-label malo">
+                            <span class="emoji">😞</span>
+                            <span class="text">No</span>
+                        </label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="recomendar-regular" name="recomendar" value="Tal vez" required>
+                        <label for="recomendar-regular" class="rating-label regular">
+                            <span class="emoji">😐</span>
+                            <span class="text">Tal vez</span>
+                        </label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="recomendar-bueno" name="recomendar" value="Sí" required>
+                        <label for="recomendar-bueno" class="rating-label bueno">
+                            <span class="emoji">😊</span>
+                            <span class="text">Sí</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comment-section">
+                <label for="comentarios">Comentarios adicionales (opcional)</label>
+                <textarea id="comentarios" name="comentarios" placeholder="Cuéntanos más sobre tu experiencia..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Enviar Encuesta</button>
+        </form>
+
+        <div id="successMessage" class="success-message">
+            <div class="icon">✅</div>
+            <h2>¡Gracias por tu opinión!</h2>
+            <p>Tu feedback es muy valioso para nosotros. Seguiremos trabajando para brindarte el mejor servicio.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Recopilar respuestas
+            const formData = new FormData(this);
+            const respuestas = {
+                atencion: formData.get('atencion'),
+                servicio: formData.get('servicio'),
+                recomendar: formData.get('recomendar'),
+                comentarios: formData.get('comentarios'),
+                fecha: new Date().toLocaleString('es-PE')
+            };
+
+            // Aquí puedes enviar las respuestas a tu servidor o servicio
+            console.log('Respuestas de la encuesta:', respuestas);
+
+            // Opcional: Enviar a Google Sheets, base de datos, etc.
+            // fetch('TU_URL_API', {
+            //     method: 'POST',
+            //     body: JSON.stringify(respuestas),
+            //     headers: {'Content-Type': 'application/json'}
+            // });
+
+            // Mostrar mensaje de éxito
+            document.getElementById('surveyForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Opcional: Redirigir después de 3 segundos
+            // setTimeout(() => {
+            //     window.location.href = 'https://tu-sitio-web.com';
+            // }, 3000);
+        });
+    </script>
+</body>
+</html>
